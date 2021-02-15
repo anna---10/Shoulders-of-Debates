@@ -331,6 +331,8 @@ class Clustering(ArgumentMining):
         ----------
         separate_embeddings: bool (default True)
             whether to calculate the embeddings for each element in the pair separately
+            False: Concatenate the two documents and calculate the embeddings over this paired input directly
+            True: Calculate the embeddings of each element of the pair separately and the take the average
 
         Returns
         -------
@@ -1238,6 +1240,12 @@ class Segmentation(ArgumentMining):
     def compute_and_save_embeddings(self, type='bert', separate_embedding=None, word_embedding=False):
 
         """ Compute the embeddings in batches and save them on disk
+        
+        Parameters
+        ----------
+        word_embedding: bool
+            True: Calculate averaged word embeddings
+            False: Take sentence embedding (output of BERT associated with the [CLS] token)
         """
 
         IDs = sorted(list(self.examples.keys()))

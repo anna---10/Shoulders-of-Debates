@@ -24,6 +24,9 @@ def get_document_embeddings_from_bert(documents,
     A list containing the sentences.
   model_name : str, optional
     The name of a huggingface model. The default is "distilbert-base-uncased"
+  word_embedding: bool
+    True: Calculate averaged word embeddings
+    False: Take sentence embedding (output of BERT associated with the [CLS] token)
 
   Returns
   -------
@@ -51,8 +54,7 @@ def get_document_embeddings_from_bert(documents,
   attention_mask = np.array(input_ids_dict['attention_mask'])
 
   last_hidden_states = model(padded_input, attention_mask=attention_mask)[0]
-  
-  #TODO testen!
+
   if word_embedding:
     embedding = np.sum(last_hidden_states[:, 1:-1, :], axis=1)
     embedding = embedding / last_hidden_states.shape[0]

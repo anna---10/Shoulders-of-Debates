@@ -9,33 +9,31 @@ sys.path.append(str(Path(PARENT_DIR + '/classes')))
 import argument_mining as am
 from argument_mining import Clustering, Segmentation
 
-def am_run(machine = 'pesaro', task = 'AS', execution_mode = 'train', dataset = 'debatepedia', embed_type = 'BERT_difference',  batch_size = 100, epochs = 100, eval_partition = 'val', model_type= 'FNN', layers =[200]):
+def am_run(machine = 'default', task = 'AS', execution_mode = 'train', dataset = 'debatepedia', embed_type = 'BERT_difference',  batch_size = 100, epochs = 100, eval_partition = 'val', model_type= 'FNN', layers =[200]):
     """Run training, evaluation, clustering etc.
     """
     model_name = task + '_' + embed_type + '_' + str(batch_size) + '_' + model_type + '-'.join([str(x) for x in layers]) + '_' + str(dataset)
     print(model_name)
-    #TODO compute and save embeddings
-    #TODO colab
+    
     assert (execution_mode in ['train', 'resume', 'evaluate', 'cluster', 'plot_history'])
-    assert (dataset in ['debatepedia', 'essay', 'debateorg'])
+    #assert (dataset in ['debatepedia', 'essay', 'debateorg'])
     assert (task in ['AS', 'DS', 'SEG'])
-    assert (machine in ['pesaro', 'shetland', 'local', 'colab', 'bwuni'])
     assert (eval_partition in ['val', 'test', 'train', None])
-    assert (model_type in ['FNN', 'LINEAR', 'BILSTM', 'CRF'])
-    assert (embed_type in ['BERT_difference', 'BERT_pair', 'BERT', 'BERT_difference_word_average', 'BERT_word_average','Fasttext_difference', 'Fasttext']) #TODO write code to berücksichtigen this
+    assert (model_type in ['FNN', 'LINEAR', 'BILSTM'])
+    #assert (embed_type in ['BERT_difference', 'BERT_pair', 'BERT', 'BERT_difference_word_average', 'BERT_word_average','Fasttext_difference', 'Fasttext'])
 
     #SET PATH TO JSON FILES
     path_data = PARENT_DIR + '/data/' + dataset + '/'
     #SET PATH TO PRECALCULATED EMBEDDINGS
-    if machine in ['pesaro', 'shetland', 'bwuni']:
+    if machine in ['default']:
         path_embed = dirname(PARENT_DIR) + '/data/'
-    elif machine == 'local':
-        path_embed = 'C:/Users/AnnaS/data/Debatten/embeddings/' 
+    elif machine == 'custom':
+        path_embed = '' #TODO Change this to set path to embeddings individually
     path_embed = path_embed + task + '/' + dataset + '/' + embed_type + '/'
 
     shuffle = True
     stratify = False
-    mode = 'debatepedia' + task #TODO change that! It should be all handled equally
+    mode = 'debatepedia' + task 
 
     if task in ['AS', 'DS']:
         file_size = 100
